@@ -12,6 +12,6 @@ export default defineConfig({
     },
   },
   server: {
-    open: "/Quran.tm",
+    open: "/search",
   },
 });

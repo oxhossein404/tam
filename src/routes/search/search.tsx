@@ -1,15 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { client, surahsList, type Surah } from "@ntq/sdk";
-import { useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 client.setConfig({
     baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 function Search() {
-
-    const navigate = useNavigate();
 
     const [surah, setsurah] = useState<Surah[]>([]);
     const [lodingsurah, setlodingsurah] = useState<boolean>(false);
@@ -72,14 +69,12 @@ function Search() {
     return (
         <div>
             {surah.map((surahs) => (
-                <div
-                    key={surahs.id}
-                    onClick={() => navigate(`/surah/${surahs.id}`)}
-                >
+
+                <div key={surahs.id}>
                     <p>{surahs.number}</p>
-                    <p>{surahs.names[0].name}</p>
+                    <Link to={`/surah/${surahs.id}`}>{surahs.names[0].name}</Link>
                     <p>{surahs.period}</p>
-                    
+
                 </div>
             ))}
         </div>
