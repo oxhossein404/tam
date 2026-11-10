@@ -16,7 +16,7 @@ function  SurahPage(){
     const [ lodingayah, setlodingayah ] = useState<boolean>(false)
     const [ erroraya, seterrorayah ] = useState<string>("")
 
-    const [translation, setTranslation] = useState<AyahTranslation[]>([]);
+    const [ texttranslation, setTexttranslation] = useState<AyahTranslation[]>([]);
     const [ listtranslations, setListtranslations ] = useState<TranslationList[]>([])
     const [ selectedLanguage, setSelectedLanguage ] = useState("")
     const [selectedlistTranslator, setSelectedlistTranslator] = useState("");
@@ -79,7 +79,7 @@ function  SurahPage(){
 
     async function getTranslation(surahId: string, translationId: string) {
         try{
-            setTranslation([])
+            setTexttranslation([])
             setTranslationError("")
             setLoadingTranslation(true)
 
@@ -95,7 +95,7 @@ function  SurahPage(){
                 throw new Error("Failed to fetch ayah translations.")
             }
             const data = response.data ?? []
-            setTranslation(data)
+            setTexttranslation(data)
         }
         catch(err : unknown){
             setTranslationError(
@@ -123,7 +123,7 @@ function  SurahPage(){
         if(id && selectedlistTranslator){
             getTranslation(id, selectedlistTranslator)
         }else{
-            setTranslation([])
+            setTexttranslation([])
         }
     }, [id, selectedlistTranslator])
 
@@ -160,17 +160,76 @@ function  SurahPage(){
             </Link>
 
             <div>
-                {ayah.map((ayah) => (
-                    <AyahBox 
-                    key={ayah.id}
-                    data={ayah}
-                    />
-                ))}
+
+                <label>Select Language</label>
+
+                <select 
+                value={selectedLanguage}
+                onChange={(event) => {
+                    setSelectedLanguage(event.target.value)
+                    setSelectedlistTranslator("")
+                    setTexttranslation([])
+                }}
+                >
+                    <option value="">Select a language</option>
+
+                    {languages.map((languages) => (
+                        <option value={languages} key={languages}>
+                            {languages}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <div>
-                {languages.map}
+
+                <label>Select Translator</label>
+
+                <select
+                value={selectedlistTranslator}
+                disabled={!selectedLanguage}
+                onChange={((event) => (
+                    setSelectedlistTranslator(event.target.value)
+                ))}
+                >
+                    <option value="">Select a translator</option>
+
+                    {filteredTranslators.map((translators) => (
+                        <option key={translators.id} value={translators.id}>
+                            {translators.translator?.name?? "Unknown translator"}
+                        </option>
+                    ))}
+                </select>
             </div>
+            {translationError && (
+                <p>{translationError}</p>
+            )}
+
+            <div>
+                {ayah.map((ayah,Translation ) => (
+                    <div key={ayah.id}>
+                        <AyahBox 
+                        key={ayah.id}
+                        data={ayah}
+                        />
+
+                        {selectedlistTranslator && (
+                            <div>
+                                {loadingTranslation ?(
+                                    <p>Loading translation...</p>
+                                ) : (
+                                    <p>
+                                        {texttranslation[Translation]?.text ?? "Translation not found."}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                ))}
+            </div>
+
+
         </div>
     )
 } 
