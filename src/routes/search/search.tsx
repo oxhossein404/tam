@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { client, surahsList, type Surah } from "@ntq/sdk";
 import { Link} from "react-router-dom";
+import { useOptions } from "@/context/optionsContext";
 
 client.setConfig({
     baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 function Search() {
+    const [options] = useOptions()
 
     const [surah, setsurah] = useState<Surah[]>([]);
     const [lodingsurah, setlodingsurah] = useState<boolean>(false);
@@ -68,6 +70,7 @@ function Search() {
 
     return (
         <div>
+            <h1>Translation ID: {options.translation}</h1>
             {surah.map((surahs) => (
 
                 <div key={surahs.id}>
